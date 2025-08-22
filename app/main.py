@@ -29,7 +29,7 @@ async def reset_and_set_commands(bot: Bot):
 
 async def main():
     # Init DB
-    init_db(settings.DATABASE_URL)
+    init_db("sqlite:///./data/users.db")
 
     bot = build_bot()
     dp = build_dispatcher()
@@ -38,11 +38,7 @@ async def main():
 
     dp.include_router(start.router)
     dp.include_router(shot.router)
-
-    if settings.HTTPS_PROXY:
-        from aiogram.client.session.aiohttp import AiohttpSession
-        bot.session = AiohttpSession(proxy=settings.HTTPS_PROXY)
-        
+       
     me = await bot.get_me()
     print(f"✅ Bot {me.username} is running and listening for updates...")
 

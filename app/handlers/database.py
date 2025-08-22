@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")  # postgresql://user:pass@host:port/dbname
+DATABASE_URL = os.getenv("PSQL_DATABASE_URL")  # postgresql://user:pass@host:port/dbname
 
 def get_conn():
     return psycopg2.connect(DATABASE_URL, cursor_factory=DictCursor)

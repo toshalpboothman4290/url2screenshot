@@ -111,9 +111,6 @@ class ShareKit:
 
         async with async_playwright() as pw:
             launch_kwargs = {"headless": headless}
-            proxy = getattr(self.s, "HTTPS_PROXY", None)
-            if proxy:
-                launch_kwargs["proxy"] = {"server": proxy}
             browser = await pw.chromium.launch(**launch_kwargs)
 
             context = await browser.new_context(
