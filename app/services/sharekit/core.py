@@ -73,6 +73,35 @@ class ShareKit:
         except:
             pass
 
+    async def launch_browser(self, viewport, dsf, is_mobile, has_touch, ua, headless=True):
+        # Start Playwright without a context manager so it stays alive
+        pw = await async_playwright().start()
+
+        chromium_args = [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-gpu",
+        ]
+
+        try:
+            browser = await pw.chromium.launch(headless=headless, args=chromium_args)
+            context = await browser.new_context(
+                viewport=viewport,
+                device_scale_factor=dsf,
+                is_mobile=is_mobile,
+                has_touch=has_touch,
+                user_agent=ua,
+                locale="fa-IR",
+                timezone_id="Asia/Tehran",
+                accept_downloads=True,
+            )
+            return pw, browser, context
+        except Exception:
+            # If launch fails, make sure we don’t leak the Playwright driver
+            await pw.stop()
+            raise
+        
     async def capture(
         self, 
         url: str, 
@@ -110,17 +139,7 @@ class ShareKit:
         MAX_PARTS = int(getattr(self.s, "MAX_SCREENS_PER_JOB", 10))
 
         async with async_playwright() as pw:
-            launch_kwargs = {"headless": headless}
-            browser = await pw.chromium.launch(**launch_kwargs)
-
-            context = await browser.new_context(
-                viewport=viewport,
-                device_scale_factor=dsf,
-                is_mobile=is_mobile,
-                has_touch=has_touch,
-                user_agent=ua,
-                locale="fa-IR"
-            )
+            pw, browser, context = await self.launch_browser(viewport, dsf, is_mobile, has_touch, ua, headless)
 
             # Block heavy resource types
             async def _router(route, request):
@@ -155,7 +174,7 @@ class ShareKit:
                     format="A4", print_background=True, 
                     margin={"top":"0","right":"0","bottom":"0","left":"0"}
                 )
-                await context.close(); await browser.close()
+                await context.close(); await browser.close(); await pw.stop()
                 return [{"data": pdf_bytes, "file_name": "page.pdf", "mime": "application/pdf"}]
 
             # measure total height
@@ -187,4 +206,5 @@ class ShareKit:
 
             await context.close()
             await browser.close()
+            await pw.stop()
             return results
