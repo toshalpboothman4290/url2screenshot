@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+\!Archive/
+\!Hazfi/
+*.py[cod]
+*.egg
+*.egg-info/
+*.log
+
+# Environments
+.env
+.env.*
+venv/
+.venv/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# VS Code or PyCharm
+.vscode/
+.idea/
+
+# Other
+*.sqlite3
+*.db
+
+static/profile_pics/
