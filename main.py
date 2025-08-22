@@ -1,6 +1,6 @@
 import asyncio, os
 
-from .services.db import init_db
+from app.services.db import init_db
 from app.config import settings
 from app.bot import build_bot, build_dispatcher
 from app.routers import start, shot
