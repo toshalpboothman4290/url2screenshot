@@ -9,4 +9,5 @@ pydantic==2.8.2
 pydantic-settings==2.4.0
 tqdm==4.66.5
 # python -m playwright install chromium
-
+boto3
+psycopg2
