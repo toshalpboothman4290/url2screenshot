@@ -1,7 +1,7 @@
 # requirements.txt
 # python -m playwright install chromium
 # python -m playwright install --with-deps chromium
-
+greenlet>=3.1
 aiogram==3.13.1
 python-dotenv==1.0.1
 pydantic==2.8.2
